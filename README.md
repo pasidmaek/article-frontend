@@ -1,53 +1,25 @@
-# Next.js & NextUI Template
-
-This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
-
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/next-app-template)
-
-## Technologies Used
-
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [NextUI v2](https://nextui.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+# Social App (Frontend)
 
 ## How to Use
-
-### Use the template with create-next-app
-
-To create a new project based on this template using `create-next-app`, run the following command:
-
-```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
-```
-
-### Install dependencies
-
 You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
 
 ```bash
 npm install
 ```
-
-### Run the development server
-
 ```bash
 npm run dev
 ```
 
-### Setup pnpm (optional)
+##Article Application Overview:
+Homepage ("/"):
+Displays a list of all public articles.
+Includes a "Create Post" button at the top to open a modal for creating a new post with a title and body.
+My Posts ("/my_post"):
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+Shows a list of articles you have posted.
+Allows you to edit or delete your articles.
+User Authentication:
 
-```bash
-public-hoist-pattern[]=*@nextui-org/*
-```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
-## License
-
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+"Sign In" button for logging into the app.
+After logging in, the "Sign In" button changes to an avatar icon.
+Clicking the avatar icon opens a dropdown with options to view "My Posts" and "Logout."
