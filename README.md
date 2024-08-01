@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-##Article Application Overview:
+## Article Application Overview:
 Homepage ("/"):
 Displays a list of all public articles.
 Includes a "Create Post" button at the top to open a modal for creating a new post with a title and body.
