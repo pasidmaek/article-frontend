@@ -5,15 +5,26 @@ import { getMyPost, deleteArticle } from "@/config/service/post";
 import CardComponent from "@/components/card";
 import { Modal, ModalContent, ModalHeader, ModalBody, useDisclosure, ModalFooter } from "@nextui-org/modal";
 import { Button } from "@nextui-org/button";
+import { Spinner } from "@nextui-org/spinner";
+import { useAuth } from "@/config/context/AuthContext";
 
 export default function AboutPage() {
+  const { isLogin } = useAuth()
   const { isOpen: isDeleteOpen, onOpenChange: onDeleteOpenChange, onClose: onDeleteClose } = useDisclosure();
-  const [posts, setPosts] = useState<ArticleProps[] | null>(null);
+  const [posts, setPosts] = useState<ArticleProps[]>([]);
+  const [isFetch, setIsFetch] = useState<boolean>(true);
   const [currentPostId, setCurrentPostId] = useState<string | null>(null);
 
   const getPost = async () => {
-    const result = await getMyPost();
-    setPosts(result.data);
+    try {
+      const result = await getMyPost();
+      console.log(result.data)
+      setPosts(result.data);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    } finally {
+      setIsFetch(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -21,7 +32,8 @@ export default function AboutPage() {
       const result = await deleteArticle(currentPostId);
       if (result.success) {
         console.log('Deleted post');
-        getPost();
+        setPosts((prevItems) => prevItems!.filter((item) => item.id !== currentPostId));
+        // getPost();
       } else {
         console.error(result.message);
       }
@@ -30,9 +42,10 @@ export default function AboutPage() {
   };
 
   useEffect(() => {
-    if (!posts) {
-      getPost();
-    }
+    getPost();
+  }, [isLogin]);
+
+  useEffect(() => {
   }, [posts]);
 
   const openDeleteModal = (id: string | null) => {
@@ -63,13 +76,23 @@ export default function AboutPage() {
         </ModalContent>
       </Modal>
       <h1 className={title()}>My post</h1>
-      <div>
-        {posts ? posts.map((post: ArticleProps, index) => (
-          <CardComponent key={index} id={post.id} onDelete={openDeleteModal} />
-        ))
-          : <p>No Post</p>
-        }
-      </div>
+      {
+        isFetch ?
+          <Spinner /> :
+          <div>
+            {posts.length === 0 ?
+              <p>No post!</p>
+              : posts
+                .sort((a, b) => {
+                  const dateA = new Date(a.created_at).getTime();
+                  const dateB = new Date(b.created_at).getTime();
+                  return dateB - dateA;
+                })
+                .map((post) => (
+                  <CardComponent key={post.id} id={post.id} onDelete={openDeleteModal} />
+                ))}
+          </div>
+      }
     </div>
   );
 }

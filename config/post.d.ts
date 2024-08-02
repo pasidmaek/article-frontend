@@ -5,6 +5,7 @@ declare global {
   };
 
   type ArticleProps = {
+    created_at: string | number | Date;
     id: string;
     title: string;
     body: string;
@@ -12,6 +13,7 @@ declare global {
       id: string;
       name: string;
     };
+    craeted_at: string;
     updated_at: string;
   }
 }

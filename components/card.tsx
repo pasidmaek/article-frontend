@@ -20,12 +20,17 @@ import More from "@/public/more";
 export default function CardComponent({ id, onDelete }: { id: string, onDelete: (id: string | null) => void }) {
   const [isMyPost, setIsMyPost] = useState<boolean>()
   const [article, setArticle] = useState<ArticleProps | null>(null);
+  const [articleEdit, setArticleEdit] = useState<ArticleProps | null>(null);
   const { isOpen: isArticleOpen, onOpen: onArticleOpen, onOpenChange: onArticleOpenChange } = useDisclosure();
   const { isOpen: isEditOpen, onOpen: onOpenEdit, onOpenChange: onEditOpenChange, onClose: onEditClose } = useDisclosure();
 
   useEffect(() => {
-    if (!article) {
-      handleFetchData();
+    handleFetchData();
+  }, []);
+
+  useEffect(() => {
+    if (article) {
+      setArticleEdit(article);
     }
   }, [article]);
 
@@ -43,8 +48,8 @@ export default function CardComponent({ id, onDelete }: { id: string, onDelete: 
   };
 
   const handleEdited = async () => {
-    if (article) {
-      const result = await updateArticle(article)
+    if (articleEdit) {
+      const result = await updateArticle(articleEdit)
       if (result.success) {
         console.log('Edited post');
         handleFetchData()
@@ -55,9 +60,14 @@ export default function CardComponent({ id, onDelete }: { id: string, onDelete: 
     }
   };
 
+  const handleCancelEdit = () => {
+    setArticleEdit(article); 
+    onEditClose();
+  };
+
   return (
     <>
-      <Modal isOpen={isArticleOpen} onOpenChange={onArticleOpenChange} className="min-h-[600px] min-w-[900px] overflow-auto p-4">
+      <Modal isOpen={isArticleOpen} onOpenChange={onArticleOpenChange} className="h-[700px] min-w-[900px] overflow-auto p-4">
         <ModalContent>
           {(onClose) => (
             <>
@@ -71,14 +81,8 @@ export default function CardComponent({ id, onDelete }: { id: string, onDelete: 
                 </p>
               </ModalHeader>
               <ModalBody>
-                <ScrollShadow className="h-[700px]">
-                  <p>
-                    {article?.body}
-                    {article?.body}
-                    {article?.body}
-                    {article?.body}
-                    {article?.body}
-                    {article?.body}
+                <ScrollShadow className="w-full">
+                  <p className="whitespace-pre-wrap break-words">
                     {article?.body}
                   </p>
                 </ScrollShadow>
@@ -87,37 +91,37 @@ export default function CardComponent({ id, onDelete }: { id: string, onDelete: 
           )}
         </ModalContent>
       </Modal>
-      <Modal isOpen={isEditOpen} onOpenChange={onEditOpenChange} className="min-w-[900px] min-h-[600px] overflow-auto p-4">
+      <Modal isOpen={isEditOpen} onOpenChange={onEditOpenChange} className="min-w-[900px] h-[700px] overflow-auto p-4">
         <ModalContent>
           {(onEditClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
                 <Input
                   placeholder="Title"
-                  value={article?.title || ""}
+                  value={articleEdit?.title || ""}
                   onChange={(e) =>
-                    setArticle((prev) =>
+                    setArticleEdit((prev) =>
                       prev ? { ...prev, title: e.target.value } : null
                     )
                   }
                 />
                 <p className="text-slate-400 text-sm">
-                  {article?.user.name}
+                  {articleEdit?.user.name}
                 </p>
                 <p className="text-slate-400 text-sm">
-                  {moment(article?.updated_at).format('D/M/YYYY')}
+                  {moment(articleEdit?.updated_at).format('D/M/YYYY')}
                 </p>
               </ModalHeader>
               <ModalBody>
                 <Textarea
                   placeholder="Body"
-                  value={article?.body || ""}
-                  onChange={(e) => setArticle((prev) => prev ? { ...prev, body: e.target.value } : null)}
+                  value={articleEdit?.body || ""}
+                  onChange={(e) => setArticleEdit((prev) => prev ? { ...prev, body: e.target.value } : null)}
                   fullWidth
                 />
               </ModalBody>
               <ModalFooter>
-                <Button color="default" onPress={onEditClose}>
+                <Button color="default" onPress={handleCancelEdit}>
                   Cancel
                 </Button>
                 <Button color="success" onPress={handleEdited}>

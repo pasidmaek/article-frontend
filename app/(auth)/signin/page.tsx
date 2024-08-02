@@ -6,9 +6,11 @@ import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { loginService } from "@/config/service/authorize";
 import { Link } from "@nextui-org/link";
+import { useAuth } from "@/config/context/AuthContext";
 
 export default function Signin() {
   const router = useRouter()
+  const { setIsLogin } = useAuth()
   const [loginInfo, setLoginInfo] = useState<UserProps>({
     email: "",
     password: ""
@@ -17,8 +19,7 @@ export default function Signin() {
   const handleLogin = async () => {
     const result = await loginService(loginInfo)
     if (result?.success) {
-      localStorage.setItem('autho', result.data.token)
-      localStorage.setItem('user', JSON.stringify(result.data.data.user))
+      setIsLogin(true)
       router.push('/')
     } else {
       console.error(result?.message)

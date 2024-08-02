@@ -12,12 +12,12 @@ const loginService = async (data: UserProps) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          'Accept': '*/*'
         },
       }
     );
-    console.log(res.status);
     if (res.status === 200) {
+      localStorage.setItem('user', JSON.stringify(res.data.status.data.user))
+      localStorage.setItem('authorization', res.data.status.token)
       return { success: true, message: "Login successful", data: res.data.status }
     }
   } catch (e: any) {
@@ -42,13 +42,10 @@ const signupService = async (data: UserProps) => {
         },
       }
     );
-    console.log(res.status)
     if (res.status === 200) {
-      localStorage.setItem('user', JSON.stringify({
-        name: res.data.status.data.name,
-        email: res.data.status.data.email
-      }))
+      localStorage.setItem('user', JSON.stringify(res.data.status.data))
       localStorage.setItem('authorization', res.data.status.token)
+
       return { success: true, message: "Login successful" }
     }
   } catch (e: any) {
@@ -69,6 +66,7 @@ const logoutService = async () => {
       if (res.status === 200) {
         localStorage.removeItem("authorization")
         localStorage.removeItem("user")
+        return true
       }
     }
   } catch (e: any) {

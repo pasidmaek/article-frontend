@@ -19,29 +19,28 @@ import {
   DropdownMenu,
   DropdownItem
 } from "@nextui-org/dropdown";
+import { useAuth } from "@/config/context/AuthContext";
 
 export const Navbar = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const { isLogin, setIsLogin } = useAuth()
   const router = useRouter();
 
   useEffect(() => {
     const checkLoginStatus = () => {
-      setIsLogin(!!localStorage.getItem('user'));
+      const user = localStorage.getItem('user');
+      setIsLogin(!!user);
     };
 
     checkLoginStatus();
-  }, [localStorage.getItem('user')]);
+  }, []);
 
-  const handleAuthAction = (action: 'logout' | 'profile') => {
+  const handleAuthAction = async (action: 'logout' | 'post') => {
     if (action === 'logout') {
-      logoutService().then(() => {
+      const result = await logoutService()
+      if (result) {
         setIsLogin(false);
-        localStorage.removeItem('user')
-        localStorage.removeItem('autho')
-        localStorage.removeItem('article-notsave')
-        router.push('/');
-      });
-    } else if (action === 'profile') {
+      };
+    } else if (action === 'post') {
       router.push('/my_post');
     }
   };
@@ -72,7 +71,7 @@ export const Navbar = () => {
                 />
               </DropdownTrigger>
               <DropdownMenu aria-label="User Menu">
-                <DropdownItem key="profile" onClick={() => handleAuthAction('profile')}>
+                <DropdownItem key="profile" onClick={() => handleAuthAction('post')}>
                   My Post
                 </DropdownItem>
                 <DropdownItem key="logout" color="warning" onClick={() => handleAuthAction('logout')}>
