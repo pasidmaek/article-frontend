@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const loginService = async (data: UserLogin) => {
+const loginService = async (data: UserProps) => {
   try {
     const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
       JSON.stringify({
@@ -26,14 +26,14 @@ const loginService = async (data: UserLogin) => {
   }
 }
 
-const signupService = async (data: UserLogin) => {
+const signupService = async (data: UserProps) => {
   try {
     const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/signup`,
       JSON.stringify({
         user: {
           email: data.email,
           password: data.password,
-          name: "test"
+          name: data.name
         }
       }),
       {
