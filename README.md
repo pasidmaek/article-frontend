@@ -4,10 +4,7 @@
 ```bash
 npm install
 ```
-create .env file and set
-```bash
-NEXT_PUBLIC_BACKEND_URL=http://127.0.0.1:3001
-```
+
 ```bash
 npm run dev
 ```
